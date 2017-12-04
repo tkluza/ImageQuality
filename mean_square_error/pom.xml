@@ -33,7 +33,7 @@
 
 	<developers>
 		<!-- See https://imagej.net/Team -->
-		<developer>
+		<developer> 	
 			<id>ctrueden</id>
 			<name>Curtis Rueden</name>
 			<url>http://imagej.net/User:Rueden</url>

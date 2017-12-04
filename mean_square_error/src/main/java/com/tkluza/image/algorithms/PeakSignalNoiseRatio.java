@@ -20,6 +20,7 @@ import org.scijava.plugin.Plugin;
 import org.scijava.ui.UIService;
 
 import com.tkluza.image.model.IQualityAlgorithm;
+import com.tkluza.image.model.ImageAlgorithm;
 
 import ij.IJ;
 import ij.process.ImageProcessor;
@@ -34,7 +35,12 @@ import net.imglib2.type.numeric.RealType;
  * @author Tomasz Kluza
  *
  */
-public class PeakSignalNoiseRatio implements IQualityAlgorithm{
+public class PeakSignalNoiseRatio extends ImageAlgorithm{
+	
+	public PeakSignalNoiseRatio(String name) {
+		algorithmName = name;
+		algorithmResult = 0;
+	}
 	
 	private double calculatePSNR(double mse) {
 		double psnr = 0;
@@ -47,15 +53,17 @@ public class PeakSignalNoiseRatio implements IQualityAlgorithm{
 	}
 
 	@Override
-	public double evaluate(ImageProcessor image1, ImageProcessor image2) {
+	public void evaluate(ImageProcessor image1, ImageProcessor image2) {
 		double psnr = 0;
-		double mse = new MeanSquareError().evaluate(image1, image2);
-		if (mse > 0) {
-			psnr = 10*Math.log10(255*255/mse);
+		MeanSquareError mse = new MeanSquareError();
+		mse.evaluate(image1, image2);
+		if (mse.getAlgorithmResult() > 0) {
+			psnr = 10*Math.log10(255*255/mse.getAlgorithmResult());
 		}
 		else
 			psnr = 99;
 		
-		return psnr;
+		algorithmResult = psnr;
 	}	
+	
 }

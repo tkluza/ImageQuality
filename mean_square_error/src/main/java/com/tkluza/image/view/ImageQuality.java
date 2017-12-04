@@ -17,6 +17,7 @@ import java.util.Vector;
 
 import org.apache.commons.vfs2.impl.VirtualFileProvider;
 import org.jruby.RubyBoolean.True;
+import org.netlib.util.booleanW;
 import org.python.antlr.PythonParser.return_stmt_return;
 import org.renjin.primitives.special.ReturnException;
 import org.scijava.ItemIO;
@@ -28,11 +29,15 @@ import org.scijava.ui.UIService;
 
 import com.google.common.base.Predicate;
 import com.tkluza.image.algorithms.MeanSquareError;
+import com.tkluza.image.algorithms.MeanStructuralSimilarity;
 import com.tkluza.image.algorithms.PeakSignalNoiseRatio;
+import com.tkluza.image.algorithms.StructuralSimilarity;
 import com.tkluza.image.model.Constraint;
 import com.tkluza.image.model.Constraint.ImageAlgorithm;
+import com.tkluza.image.model.Constraint.Mode;
 
 import edu.mines.jtk.opt.VectContainer;
+import groovyjarjarantlr.collections.List;
 import ij.IJ;
 import ij.ImagePlus;
 import ij.gui.GenericDialog;
@@ -82,19 +87,21 @@ public class ImageQuality<T extends RealType<T>> implements Command {
 	private GenericDialog dialog;	
 	private ImagePlus image1, image2;
 	private ImageProcessor imageProcessor1, imageProcessor2;
-	private String[] algorithmNames = {"MSE", "PSNR", "SSIM"};
-	private boolean[] defaultState = {true, true, true};
+	private String[] algorithmNames = {"MSE", "PSNR", "SSIM", "MSSIM"};
+	private boolean[] defaultState = {true, true, true, true};
+	private ArrayList<com.tkluza.image.model.ImageAlgorithm> results = new ArrayList<>();
 
 	@Override
 	public void run() {
 		loadImages();
 		initDialog();
 		getChosenAlgorithms();
+		showResults();
 	}
 
 	private void initDialog() {
 		dialog = new GenericDialog("Image quality algorithms:");
-		dialog.addCheckboxGroup(3, 2, algorithmNames, defaultState);
+		dialog.addCheckboxGroup(algorithmNames.length, 2, algorithmNames, defaultState);
 		dialog.showDialog();
 	}
 	
@@ -112,16 +119,35 @@ public class ImageQuality<T extends RealType<T>> implements Command {
 	private void getAlgorithm(int index) {
 		switch (index) {
 		case 0:
-			new MeanSquareError().evaluate(imageProcessor1, imageProcessor2);
+			MeanSquareError msError = new MeanSquareError("MSE");
+			msError.evaluate(imageProcessor1, imageProcessor2);
+			results.add(msError);
 			break;
 		case 1:
-			new PeakSignalNoiseRatio().evaluate(imageProcessor1, imageProcessor2);
+			PeakSignalNoiseRatio psnr = new PeakSignalNoiseRatio("PSNR");
+			psnr.evaluate(imageProcessor1, imageProcessor2);
+			results.add(psnr);
 			break;
 		case 2:
-			break;
-		default:
-			break;
+			StructuralSimilarity ssim = new StructuralSimilarity("SSIM", image1, image2, Mode.DEFAULT);
+			ssim.invoke();
+			results.add(ssim);
+			break;	
+		case 3:
+			MeanStructuralSimilarity mssim = new MeanStructuralSimilarity("MSSIM", image1, image2, Mode.DEFAULT);
+			mssim.invoke();
+			results.add(mssim);
+			break;	
 		}
+	}
+	
+	private void  showResults() {
+		GenericDialog result = new GenericDialog ("RESULTS of Image Algorithms");
+		for (com.tkluza.image.model.ImageAlgorithm image : results) {
+			result.addNumericField(image.getAlgorithmName(), image.getAlgorithmResult(), 10, 15, "");
+		}
+		
+		result.showDialog();
 	}
 	
 	private void loadImages() {
@@ -144,7 +170,7 @@ public class ImageQuality<T extends RealType<T>> implements Command {
 	
 	private void convert() {
 		convertResultToImagePlus();
-		convertImagePlusToImageProcessor()
+		convertImagePlusToImageProcessor();
 	}
 	
 	private void convertResultToImagePlus() {

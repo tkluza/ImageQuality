@@ -6,5 +6,5 @@ import ij.process.ImageProcessor;
 
 public interface IQualityAlgorithm {
 	
-	double evaluate(ImageProcessor image1, ImageProcessor image2);
+	void evaluate(ImageProcessor image1, ImageProcessor image2);
 }
