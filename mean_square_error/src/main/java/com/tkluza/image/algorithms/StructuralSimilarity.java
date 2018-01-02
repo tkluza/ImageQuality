@@ -1,21 +1,17 @@
 package com.tkluza.image.algorithms;
 
-import ij.*;
-import ij.plugin.*;
-import ij.process.*;
-import ij.gui.*;
-import ij.measure.*;
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.ColorModel;
 
-import com.tkluza.image.model.ImageAlgorithm;
 import com.tkluza.image.model.ImageSSIMAlgorithm;
-import com.tkluza.image.model.Constraint.Mode;
+import com.tkluza.tool.Constraint.Mode;
+import com.tkluza.tool.Constraint.QualityAlgorithm;
 
-import java.awt.event.*;
-import java.applet.*;
-import java.awt.geom.*;
-import java.awt.font.*;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.gui.GenericDialog;
+import ij.process.FloatProcessor;
+import ij.process.ImageConverter;
+import ij.process.ImageProcessor;
 
 /**
  * 
@@ -24,8 +20,9 @@ import java.awt.font.*;
  * November 27th 2008.
  * 
  * Main reference: Zhou Wang, A. C. Bovik, H. R. Sheikh, and E. P. Simoncelli,
- * “Image quality assessment: From error visibility to structural similarity”,
- * IEEE Trans. Image Processing, vol. 13, pp. 600–612, Apr. 2004.
+ * “Image quality assessment: From error visibility to structural
+ * similarity”, IEEE Trans. Image Processing, vol. 13, pp. 600–612, Apr.
+ * 2004.
  * 
  * ImageJ by W. Rasband, U. S. National Institutes of Health, Bethesda,
  * Maryland, USA, http://rsb.info.nih.gov/ij/. 1997-2007. November 27th 2008.
@@ -56,8 +53,8 @@ import java.awt.font.*;
  * THE DIFERENCE BETWEEN THIS VERSION ANS V_1 IS THE SIMULATION OF VIEWING
  * DISTANCE. ACCORDING TO ZHOU WANG'S HOME PAGE, literal citation:
  * 
- * " The precisely “right” scale depends on both the image resolution and the
- * viewing distance and is usually difficult to be obtained. In practice, we
+ * " The precisely “right” scale depends on both the image resolution and
+ * the viewing distance and is usually difficult to be obtained. In practice, we
  * suggest to use the following empirical formula to determine the scale for
  * images viewed from a typical distance (say 3~5 times of the image height): 1)
  * Let F = max(1, round(N/256)), where N is the number of pixels in image
@@ -103,13 +100,15 @@ public class StructuralSimilarity extends ImageSSIMAlgorithm {
 	private GenericDialog gd;
 	private Mode mode;
 
-	public StructuralSimilarity(String name, ImagePlus image1, ImagePlus image2) {
-		super(name, image1, image2);
+	public StructuralSimilarity(ImagePlus image1, ImagePlus image2) {
+		super(image1, image2);
+		this.algorithmName = QualityAlgorithm.SSIM;
 		this.mode = Mode.DEFAULT;
 	}
 
-	public StructuralSimilarity(String name, ImagePlus image1, ImagePlus image2, Mode mode) {
-		this(name, image1, image2);
+	public StructuralSimilarity(ImagePlus image1, ImagePlus image2, Mode mode) {
+		this(image1, image2);
+		this.algorithmName = QualityAlgorithm.SSIM;
 		this.mode = mode;
 		prepareImages();
 	}

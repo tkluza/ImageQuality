@@ -8,46 +8,29 @@
 
 package com.tkluza.image.algorithms;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.python.antlr.PythonParser.return_stmt_return;
-import org.scijava.ItemIO;
-import org.scijava.command.Command;
-import org.scijava.convert.ConvertService;
-import org.scijava.plugin.Parameter;
-import org.scijava.plugin.Plugin;
-import org.scijava.ui.UIService;
-
-import com.tkluza.image.model.IQualityAlgorithm;
 import com.tkluza.image.model.ImageAlgorithm;
+import com.tkluza.tool.Constraint.QualityAlgorithm;
 
-import ij.IJ;
 import ij.process.ImageProcessor;
-import io.scif.services.DatasetIOService;
-import net.imagej.Dataset;
-import net.imagej.ImageJ;
-import net.imagej.ops.OpService;
-import net.imglib2.type.numeric.RealType;
 
 /**
  * 
  * @author Tomasz Kluza
  *
  */
-public class PeakSignalNoiseRatio extends ImageAlgorithm{
-	
-	public PeakSignalNoiseRatio(String name) {
-		algorithmName = name;
+public class PeakSignalNoiseRatio extends ImageAlgorithm {
+
+	public PeakSignalNoiseRatio() {
+		super();
+		algorithmName = QualityAlgorithm.PSNR;
 		algorithmResult = 0;
 	}
-	
+
 	private double calculatePSNR(double mse) {
 		double psnr = 0;
 		if (mse > 0) {
-			psnr = 10*Math.log10(255*255/mse);
-		}
-		else
+			psnr = 10 * Math.log10(255 * 255 / mse);
+		} else
 			psnr = 99;
 		return psnr;
 	}
@@ -58,12 +41,11 @@ public class PeakSignalNoiseRatio extends ImageAlgorithm{
 		MeanSquareError mse = new MeanSquareError();
 		mse.evaluate(image1, image2);
 		if (mse.getAlgorithmResult() > 0) {
-			psnr = 10*Math.log10(255*255/mse.getAlgorithmResult());
-		}
-		else
+			psnr = 10 * Math.log10(255 * 255 / mse.getAlgorithmResult());
+		} else
 			psnr = 99;
-		
+
 		algorithmResult = psnr;
-	}	
-	
+	}
+
 }

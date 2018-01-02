@@ -1,20 +1,15 @@
 package com.tkluza.image.algorithms;
 
-import com.tkluza.image.model.IQualityAlgorithm;
 import com.tkluza.image.model.ImageAlgorithm;
+import com.tkluza.tool.Constraint.QualityAlgorithm;
 
 import ij.process.ImageProcessor;
-import scala.reflect.internal.Trees.Super;
 
 public class MeanSquareError extends ImageAlgorithm {
 
 	public MeanSquareError() {
 		super();
-	}
-	
-	public MeanSquareError(String name) {
-		super();
-		algorithmName = name;
+		algorithmName = QualityAlgorithm.MSE;
 		algorithmResult = 0;
 	}
 
@@ -31,8 +26,9 @@ public class MeanSquareError extends ImageAlgorithm {
 			}
 		}
 
-		algorithmResult = mse =  (double) sum / (image1.getHeight() * image1.getWidth());
+		algorithmResult = mse = (double) sum / (image1.getHeight() * image1.getWidth());
 	}
 
-	public void get() {}
+	public void get() {
+	}
 }

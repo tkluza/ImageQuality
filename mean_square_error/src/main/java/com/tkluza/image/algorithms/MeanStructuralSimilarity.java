@@ -1,25 +1,15 @@
 package com.tkluza.image.algorithms;
 
-import ij.*;
-import ij.plugin.*;
-import ij.process.*;
-import ij.gui.*;
-import ij.measure.*;
-import java.awt.*;
-import java.awt.image.*;
-
-import org.fife.rsta.ac.xml.ValidationConfig;
-import org.python.antlr.PythonParser.return_stmt_return;
-
-import com.tkluza.image.model.Constraint.Mode;
-import com.tkluza.image.model.ImageAlgorithm;
 import com.tkluza.image.model.ImageSSIMAlgorithm;
-import com.tkluza.image.view.ImageQuality;
+import com.tkluza.tool.Constraint.Mode;
+import com.tkluza.tool.Constraint.QualityAlgorithm;
 
-import java.awt.event.*;
-import java.applet.*;
-import java.awt.geom.*;
-import java.awt.font.*;
+import ij.IJ;
+import ij.ImagePlus;
+import ij.gui.GenericDialog;
+import ij.process.FloatProcessor;
+import ij.process.ImageConverter;
+import ij.process.ImageProcessor;
 
 /**
  * 
@@ -122,13 +112,15 @@ public class MeanStructuralSimilarity extends ImageSSIMAlgorithm {
 	private GenericDialog gd;
 	private Mode mode;
 
-	public MeanStructuralSimilarity(String name, ImagePlus image1, ImagePlus image2) {
-		super(name, image1, image2);
+	public MeanStructuralSimilarity(ImagePlus image1, ImagePlus image2) {
+		super(image1, image2);
+		this.algorithmName = QualityAlgorithm.MSSSIM;
 		this.mode = Mode.DEFAULT;
 	}
 
-	public MeanStructuralSimilarity(String name, ImagePlus image1, ImagePlus image2, Mode mode) {
-		this(name, image1, image2);
+	public MeanStructuralSimilarity(ImagePlus image1, ImagePlus image2, Mode mode) {
+		this(image1, image2);
+		this.algorithmName = QualityAlgorithm.MSSSIM;
 		this.mode = mode;
 		prepareImages();
 	}

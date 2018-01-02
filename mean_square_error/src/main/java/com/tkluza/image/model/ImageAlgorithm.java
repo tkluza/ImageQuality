@@ -1,23 +1,21 @@
 package com.tkluza.image.model;
 
-import org.omg.CosNaming.NamingContextExtPackage.StringNameHelper;
-
-import ij.process.ImageProcessor;
+import com.tkluza.tool.Constraint.QualityAlgorithm;
 
 public abstract class ImageAlgorithm implements IQualityAlgorithm {
 
-	protected String algorithmName;
+	protected QualityAlgorithm algorithmName;
 	protected double algorithmResult;
-	
+
 	public ImageAlgorithm() {
-		algorithmName = "";
+		algorithmName = QualityAlgorithm.UNDEFINED;
 		algorithmResult = 0;
 	}
-	
-	public String getAlgorithmName() {
+
+	public QualityAlgorithm getAlgorithmName() {
 		return algorithmName;
 	}
-	
+
 	public double getAlgorithmResult() {
 		return algorithmResult;
 	}

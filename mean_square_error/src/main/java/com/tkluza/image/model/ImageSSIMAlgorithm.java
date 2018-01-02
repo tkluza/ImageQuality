@@ -1,18 +1,20 @@
 package com.tkluza.image.model;
 
+import com.tkluza.tool.Constraint.QualityAlgorithm;
+
 import ij.ImagePlus;
 import ij.process.ImageProcessor;
 
 public abstract class ImageSSIMAlgorithm extends ImageAlgorithm {
 
 	protected ImagePlus image1, image2;
-	
-	public ImageSSIMAlgorithm(String name, ImagePlus image1, ImagePlus image2) {
-		algorithmName = name;
+
+	public ImageSSIMAlgorithm(ImagePlus image1, ImagePlus image2) {
+		super();
 		this.image1 = image1;
 		this.image2 = image2;
 	}
-	
+
 	public void invoke() {
 		showDialog();
 		if (validation())
@@ -25,9 +27,9 @@ public abstract class ImageSSIMAlgorithm extends ImageAlgorithm {
 	}
 
 	protected abstract void showDialog();
-	
+
 	protected abstract boolean validation();
-	
+
 	protected abstract void actualAlgorithm();
 
 }
